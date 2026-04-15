@@ -1,10 +1,12 @@
 """
 Filter schemas.
 """
+from decimal import Decimal
 from typing import Optional
+
 from pydantic import BaseModel, Field
 
-from app.models.enums import UserRole, UserStatus
+from app.models.enums import UserRole, UserStatus, VehicleStatus
 
 
 class UserFilter(BaseModel):
@@ -24,3 +26,16 @@ class DealershipFilter(BaseModel):
     email: Optional[str] = None
     document_id: Optional[str] = None
     status: Optional[str] = None
+
+
+class VehicleFilter(BaseModel):
+    """Schema for vehicle filtering."""
+
+    search: Optional[str] = None
+    brand: Optional[str] = None
+    model: Optional[str] = None
+    year_min: Optional[int] = Field(None, ge=1900)
+    year_max: Optional[int] = Field(None, le=2030)
+    price_min: Optional[Decimal] = Field(None, ge=0)
+    price_max: Optional[Decimal] = Field(None, ge=0)
+    status: Optional[VehicleStatus] = None

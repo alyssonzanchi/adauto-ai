@@ -47,20 +47,26 @@ Estabelecer a base técnica e infraestrutura do sistema.
 - [x] CRUD de Users
 - [x] Profile management
 
-### Semana 4: Veículos API
+### Semana 4: Veículos API ✅
 **Backend**
-- [ ] CRUD de Vehicles completo
-- [ ] Upload de imagens (S3/MinIO)
-- [ ] Listagem com filtros e paginação
-- [ ] Busca full-text (opcional)
-- [ ] Validações de negócio
+- [x] CRUD de Vehicles completo
+- [x] Upload de imagens (S3/MinIO)
+- [x] Listagem com filtros e paginação
+- [x] Busca full-text (opcional)
+- [x] Validações de negócio
+- [x] IA Service (mock)
 
 **Frontend**
-- [ ] Setup Next.js project
-- [ ] Configurar shadcn/ui
-- [ ] Criar layout base
-- [ ] Sistema de routing
-- [ ] Auth context/provider
+- [x] Setup Next.js project
+- [x] Configurar shadcn/ui (parcial - types/hooks)
+- [x] Criar layout base
+- [x] Sistema de routing
+- [x] Auth context/provider
+- [x] Vehicle list page
+- [ ] Vehicle form (Semana 14)
+- [ ] Upload UI (Semana 14)
+
+**Histórico**: `historico/semana4/` ✅
 
 ---
 

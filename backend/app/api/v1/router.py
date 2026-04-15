@@ -3,7 +3,7 @@ API router.
 """
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, users, dealerships, profile
+from app.api.v1.endpoints import auth, users, dealerships, profile, vehicles
 
 api_router = APIRouter()
 
@@ -24,6 +24,12 @@ api_router.include_router(
     dealerships.router,
     prefix="/dealerships",
     tags=["Dealerships"]
+)
+
+api_router.include_router(
+    vehicles.router,
+    prefix="/vehicles",
+    tags=["Vehicles"]
 )
 
 api_router.include_router(

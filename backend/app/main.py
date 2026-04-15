@@ -12,10 +12,25 @@ from app.core.database import init_db, close_db
 from app.core.redis_client import get_redis, close_redis
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan handler."""
+    # Startup
+    # Initialize database
+    await init_db()
+
+    yield
+
+    # Shutdown
+    await close_redis()
+    await close_db()
+
+
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
     description="Car Ads Platform API",
+    lifespan=lifespan,
 )
 
 # CORS middleware
@@ -45,22 +60,6 @@ async def setup_rate_limiting():
     except Exception as e:
         print(f"⚠️  Rate limiting disabled: {e}")
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Application lifespan handler."""
-    # Startup
-    # Initialize database
-    await init_db()
-
-    yield
-
-    # Shutdown
-    await close_redis()
-    await close_db()
-
-
-app lifespan = lifespan()
 
 # Include API router
 app.include_router(api_router, prefix="/api/v1")

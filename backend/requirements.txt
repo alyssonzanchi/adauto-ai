@@ -44,6 +44,9 @@ pgvector==0.2.4
 boto3==1.29.0
 botocore==1.32.0
 
+# Image Processing
+Pillow==10.1.0
+
 # Facebook Ads
 facebook-business==18.0.1
 

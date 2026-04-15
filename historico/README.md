@@ -12,10 +12,19 @@ historico/
 │   ├── DIA_2_CHECKLIST.md             # Checklist do Dia 2
 │   └── IMPLEMENTATION_SUMMARY.md      # Resumo de implementação
 │
-└── semana3/               # Histórico da Semana 3 (Auth & API Core)
-    ├── CHECKLIST.md                   # Checklist detalhado
+├── semana3/               # Histórico da Semana 3 (Auth & API Core)
+│   ├── CHECKLIST.md                   # Checklist detalhado
+│   ├── README.md                      # Overview da semana
+│   └── SEMANA_3_SUMMARY.md            # Resumo completo
+│
+└── semana4/               # Histórico da Semana 4 (Veículos API)
+    ├── COMPLETE_TEST_SUMMARY.md       # Resumo completo dos testes
+    ├── IMAGE_TESTS_RESULTS.md         # Testes de upload de imagens
     ├── README.md                      # Overview da semana
-    └── SEMANA_3_SUMMARY.md            # Resumo completo
+    ├── SEMANA4_CONCLUSAO.md           # Conclusão da semana
+    ├── TEST_RESULTS.md                # Resultados dos testes backend
+    ├── VEHICLE_IMPLEMENTATION_SUMMARY.md # Resumo da implementação
+    └── VEHICLE_TESTING_GUIDE.md       # Guia para testar manualmente
 ```
 
 ## 🎯 Propósito
@@ -33,7 +42,7 @@ Cada subpasta representa uma semana ou fase importante do projeto e contém:
 |-------------|--------|------|
 | Dia 2 (Planejamento) | ✅ 100% | 17/03/2026 |
 | Semana 3 (Auth & API Core) | ✅ 100% | 08/04/2026 |
-| Semana 4 (Veículos API) | ⏳ 0% | - |
+| Semana 4 (Veículos API) | ✅ 85% | 14/04/2026 |
 
 ## 🔗 Links Úteis
 
@@ -49,5 +58,5 @@ Cada subpasta representa uma semana ou fase importante do projeto e contém:
 
 ---
 
-**Última atualização**: 08/04/2026
+**Última atualização**: 14/04/2026
 **Status**: 🟢 ON TRACK
