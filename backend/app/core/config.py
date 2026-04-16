@@ -38,6 +38,20 @@ class Settings(BaseSettings):
     # AI APIs
     ANTHROPIC_API_KEY: str = Field(default="")
     OPENAI_API_KEY: str = Field(default="")
+    AI_MODEL_PRIMARY: str = Field(default="claude-3-5-sonnet-20241022")
+    AI_MODEL_FALLBACK: str = Field(default="gpt-4-turbo-preview")
+    EMBEDDING_MODEL: str = Field(default="text-embedding-3-small")
+    AI_MAX_RETRIES: int = Field(default=3)
+    AI_TIMEOUT: int = Field(default=30)
+    AI_ENABLE_CACHING: bool = Field(default=True)
+
+    # Vector Store
+    VECTOR_DIMENSIONS: int = Field(default=1536)
+    VECTOR_SIMILARITY_THRESHOLD: float = Field(default=0.7)
+
+    # Feature Store
+    FEATURE_CACHE_TTL: int = Field(default=3600)
+    EMBEDDING_CACHE_TTL: int = Field(default=86400)
 
     # Facebook Ads
     FACEBOOK_APP_ID: str = Field(default="")
@@ -108,6 +122,10 @@ class Settings(BaseSettings):
     ENABLE_AI_SERVICE: bool = Field(default=True)
     ENABLE_AUTO_OPTIMIZATION: bool = Field(default=False)
     ENABLE_ANALYTICS: bool = Field(default=True)
+    ENABLE_CLAUDE_AI: bool = Field(default=True)
+    ENABLE_OPENAI_FALLBACK: bool = Field(default=True)
+    ENABLE_VECTOR_SEARCH: bool = Field(default=True)
+    ENABLE_EMBEDDING_CACHE: bool = Field(default=True)
 
 
 # Global settings instance

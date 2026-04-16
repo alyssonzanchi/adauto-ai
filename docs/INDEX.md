@@ -27,9 +27,12 @@
 ### 🤖 Sou Engenheiro(a) de AI/ML
 
 **O que ler primeiro:**
-1. `dia2-arquitetura/ai-agent-structure.md` - Arquitetura do AI Agent
-2. `dia1-planejamento/04-dados-veiculos.md` - Estrutura de dados
-3. `dia1-planejamento/05-metricas-sucesso.md` - Métricas para otimizar
+1. **`../historico/semana5-ai-service/README.md`** - ⭐ Implementação AI Service completa
+2. `dia2-arquitetura/ai-agent-structure.md` - Arquitetura do AI Agent
+3. `../historico/semana5-ai-service/AI_RUNBOOK.md` - Operação e manutenção
+4. `../historico/semana5-ai-service/AI_SERVICE_SETUP.md` - Configuração técnica
+5. `dia1-planejamento/04-dados-veiculos.md` - Estrutura de dados
+6. `dia1-planejamento/05-metricas-sucesso.md` - Métricas para otimizar
 
 ---
 
@@ -86,8 +89,10 @@
 #### 📊 Histórico de Implementação
 | Semana | Arquivo | O Que Contém | Status |
 |--------|---------|--------------|--------|
-| Semana 1-2 | `historico/dia2/IMPLEMENTATION_SUMMARY.md` | Resumo Dia 2 | ✅ Completo |
-| Semana 3 | `historico/semana3/SEMANA_3_SUMMARY.md` | Autenticação & API Core | ✅ Completo |
+| Semana 1-2 | `../historico/dia2/IMPLEMENTATION_SUMMARY.md` | Resumo Dia 2 | ✅ Completo |
+| Semana 3 | `../historico/semana3/SEMANA_3_SUMMARY.md` | Autenticação & API Core | ✅ Completo |
+| Semana 4 | `../historico/semana4/SEMANA4_CONCLUSAO.md` | CRUD Veículos & Upload Imagens | ✅ Completo |
+| Semana 5 | `../historico/semana5-ai-service/README.md` | AI Service Foundation | ✅ Completo |
 
 ---
 
@@ -159,27 +164,27 @@
 ## 🎯 Próximos Passos
 
 1. ✅ Documentação completa e organizada
-2. ✅ Semanas 1-3 implementadas
-3. ⏳ Semana 4: Veículos API
-4. ⏳ Testes e deploy
+2. ✅ Semanas 1-5 implementadas
+3. ⏳ Semana 6: Advanced AI Agents
+4. ⏳ Semana 7: ML Models (XGBoost)
+5. ⏳ Semana 8: Predictor & Optimizer Agents
 
 ---
 
 ## 📈 Progresso da Implementação
 
-### ✅ Completo (Semanas 1-3)
-- Database models implementados
-- Redis cache configurado
-- JWT authentication completo
-- RBAC implementado (ADMIN, MANAGER, USER)
-- Rate limiting com Redis
-- 25 endpoints prontos (Auth, Users, Dealerships, Profile)
+### ✅ Completo (Semanas 1-5)
+- **Semana 1-2**: Database models, Redis cache, Setup inicial
+- **Semana 3**: JWT authentication completo, RBAC (ADMIN, MANAGER, USER), Rate limiting
+- **Semana 4**: Veículos API, Upload de imagens (S3/MinIO), Frontend inicial
+- **Semana 5**: AI Service Foundation - Claude API, 3 agentes especializados, pgvector, Redis caching
+- **Total**: 25+ endpoints prontos + AI Service completo
 
-### ⏳ Em Progresso (Semana 4)
-- Veículos API
-- Upload de imagens (S3/MinIO)
-- Frontend (Next.js + shadcn/ui)
+### ⏳ Próximas Semanas (6-8)
+- **Semana 6**: Advanced AI Agents (Recommender, Trend, Competitor)
+- **Semana 7**: ML Models (XGBoost price prediction, CTR prediction)
+- **Semana 8**: Predictor & Optimizer Agents
 
 ---
 
-**Status**: 🟢 ON TRACK - Semana 3 completa!
+**Status**: 🟢 ON TRACK - Semana 5 completa!

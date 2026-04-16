@@ -121,7 +121,43 @@ class VehicleAnalyzeResponse(BaseModel):
     price_market: Decimal
     price_score: int
     price_position: str
+    selling_points: List[str]
+    target_audience: List[str]
+    suggested_improvements: List[str]
+    estimated_ctr: float
+    estimated_conversion: float
     ai_analysis: Dict
+    analysis_version: str
+    analyzed_at: datetime
+
+
+class SimilarVehicleResponse(BaseModel):
+    """Schema for similar vehicle response."""
+
+    id: UUID
+    title: str
+    brand: str
+    model: str
+    year: int
+    price: Decimal
+    mileage: Optional[int]
+    similarity: float
+    main_image: Optional[str]
+
+
+class SemanticSearchResponse(BaseModel):
+    """Schema for semantic search response."""
+
+    id: UUID
+    title: str
+    brand: str
+    model: str
+    year: int
+    price: Decimal
+    mileage: Optional[int]
+    similarity: float
+    main_image: Optional[str]
+    description: Optional[str]
 
 
 class ImageUploadResponse(BaseModel):

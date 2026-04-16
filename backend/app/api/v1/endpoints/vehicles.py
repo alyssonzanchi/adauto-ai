@@ -18,11 +18,14 @@ from app.schemas.vehicle import (
     VehicleUpdate,
     VehicleAnalyzeResponse,
     ImageUploadResponse,
+    SimilarVehicleResponse,
+    SemanticSearchResponse,
 )
 from app.schemas.filters import VehicleFilter
 from app.schemas.pagination import PaginatedResponse, PaginationParams
 from app.services.image_service import image_service
-from app.services.ai_service import ai_service
+from app.services.ai_service import ai_service  # Keep for backward compatibility
+from app.services.ai.orchestrator import get_orchestrator
 
 router = APIRouter()
 
@@ -417,6 +420,7 @@ async def analyze_vehicle(
 
     # Perform AI analysis
     vehicle_data = {
+        "id": str(vehicle.id),
         "price": float(vehicle.price),
         "year": vehicle.year,
         "mileage": vehicle.mileage or 0,
@@ -426,9 +430,19 @@ async def analyze_vehicle(
         "fuel_type": vehicle.fuel_type,
         "features": vehicle.features or {},
         "ownership": vehicle.ownership,
+        "description": vehicle.description,
+        "title": vehicle.title,
     }
 
-    analysis = await ai_service.analyze_vehicle(vehicle_data)
+    # Use orchestrator if AI service is enabled
+    from app.core.config import settings
+
+    if settings.ENABLE_AI_SERVICE:
+        orchestrator = get_orchestrator()
+        analysis = await orchestrator.analyze_vehicle(vehicle_data, db)
+    else:
+        # Fallback to mock service
+        analysis = await ai_service.analyze_vehicle(vehicle_data)
 
     # Update vehicle with analysis results
     vehicle.price_market = analysis["price_market"]
@@ -443,7 +457,14 @@ async def analyze_vehicle(
         price_market=analysis["price_market"],
         price_score=analysis["price_score"],
         price_position=analysis["price_position"],
+        selling_points=analysis.get("selling_points", []),
+        target_audience=analysis.get("target_audience", []),
+        suggested_improvements=analysis.get("suggested_improvements", []),
+        estimated_ctr=analysis.get("estimated_ctr", 0.0),
+        estimated_conversion=analysis.get("estimated_conversion", 0.0),
         ai_analysis=analysis,
+        analysis_version=analysis.get("analysis_version", "v1.0.0"),
+        analyzed_at=analysis.get("analyzed_at", ""),
     )
 
 
@@ -526,6 +547,231 @@ async def upload_vehicle_images(
         images=vehicle.images,
         main_image=vehicle.main_image,
     )
+
+
+@router.get("/{vehicle_id}/similar", response_model=List[SimilarVehicleResponse])
+async def get_similar_vehicles(
+    vehicle_id: UUID,
+    limit: int = Query(10, ge=1, le=50, description="Maximum number of results"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Get vehicles similar to a given vehicle.
+
+    Uses semantic search with pgvector embeddings.
+
+    Args:
+        vehicle_id: Reference vehicle ID
+        limit: Maximum number of results
+        current_user: Current authenticated user
+        db: Database session
+
+    Returns:
+        List of similar vehicles with similarity scores
+
+    Raises:
+        HTTPException: If vehicle not found, no permission, or AI disabled
+    """
+    # Check if vector search is enabled
+    from app.core.config import settings
+
+    if not settings.ENABLE_VECTOR_SEARCH or not settings.ENABLE_AI_SERVICE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Vector search is not enabled"
+        )
+
+    # Verify vehicle exists and user has permission
+    result = await db.execute(
+        select(Vehicle).where(Vehicle.id == vehicle_id).where(Vehicle.deleted_at.is_(None))
+    )
+    vehicle = result.scalar_one_or_none()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found"
+        )
+
+    # Check permission
+    if (current_user.role != UserRole.ADMIN and
+        vehicle.dealership_id != current_user.dealership_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+
+    # Get similar vehicles
+    try:
+        orchestrator = get_orchestrator()
+        similar_vehicles = await orchestrator.find_similar_vehicles(
+            db=db,
+            vehicle_id=str(vehicle_id),
+            limit=limit,
+        )
+
+        return similar_vehicles
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to find similar vehicles: {str(e)}"
+        )
+
+
+@router.get("/search/semantic", response_model=List[SemanticSearchResponse])
+async def semantic_search_vehicles(
+    query: str = Query(..., min_length=3, description="Search query"),
+    limit: int = Query(10, ge=1, le=50, description="Maximum number of results"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Semantic search for vehicles using natural language.
+
+    Uses pgvector embeddings for intelligent search.
+
+    Args:
+        query: Search query text
+        limit: Maximum number of results
+        current_user: Current authenticated user
+        db: Database session
+
+    Returns:
+        List of matching vehicles with similarity scores
+
+    Raises:
+        HTTPException: If AI disabled
+    """
+    # Check if vector search is enabled
+    from app.core.config import settings
+
+    if not settings.ENABLE_VECTOR_SEARCH or not settings.ENABLE_AI_SERVICE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Semantic search is not enabled"
+        )
+
+    # Build filters based on user role
+    filters = {}
+    if current_user.role != UserRole.ADMIN:
+        # Non-admin users only see vehicles from their dealership
+        # Note: This is applied in the query itself
+        pass
+
+    try:
+        orchestrator = get_orchestrator()
+        results = await orchestrator.search_vehicles_semantically(
+            db=db,
+            query_text=query,
+            limit=limit,
+            filters=filters,
+        )
+
+        # Filter results based on user permissions
+        if current_user.role != UserRole.ADMIN:
+            # Filter to only show vehicles from user's dealership
+            results = [
+                r for r in results
+                if r.get("dealership_id") == str(current_user.dealership_id)
+            ]
+
+        return results
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Semantic search failed: {str(e)}"
+        )
+
+
+@router.post("/ai/generate-ad", response_model=Dict)
+async def generate_vehicle_ad(
+    vehicle_id: UUID,
+    content_type: str = Query("full", description="Content type: 'headline' or 'full'"),
+    current_user: User = Depends(get_current_manager_or_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Generate advertisement content for a vehicle.
+
+    Uses AI to create compelling ad copy.
+
+    Args:
+        vehicle_id: Vehicle ID
+        content_type: Type of content to generate
+        current_user: Current authenticated user
+        db: Database session
+
+    Returns:
+        Generated ad content
+
+    Raises:
+        HTTPException: If vehicle not found, no permission, or AI disabled
+    """
+    # Check if AI service is enabled
+    from app.core.config import settings
+
+    if not settings.ENABLE_AI_SERVICE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="AI service is not enabled"
+        )
+
+    # Get vehicle
+    result = await db.execute(
+        select(Vehicle).where(Vehicle.id == vehicle_id).where(Vehicle.deleted_at.is_(None))
+    )
+    vehicle = result.scalar_one_or_none()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found"
+        )
+
+    # Check permission
+    if (current_user.role != UserRole.ADMIN and
+        vehicle.dealership_id != current_user.dealership_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+
+    # Prepare vehicle data
+    vehicle_data = {
+        "id": str(vehicle.id),
+        "brand": vehicle.brand,
+        "model": vehicle.model,
+        "year": vehicle.year,
+        "price": float(vehicle.price),
+        "mileage": vehicle.mileage or 0,
+        "body_type": vehicle.body_type,
+        "transmission": vehicle.transmission,
+        "fuel_type": vehicle.fuel_type,
+        "features": vehicle.features or {},
+        "description": vehicle.description,
+        "title": vehicle.title,
+        "version": vehicle.version,
+        "color": vehicle.color,
+    }
+
+    try:
+        orchestrator = get_orchestrator()
+        ad_content = await orchestrator.generate_ad_content(
+            vehicle_data=vehicle_data,
+            content_type=content_type,
+        )
+
+        return ad_content
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate ad content: {str(e)}"
+        )
+
 
 
 @router.delete("/{vehicle_id}/images/{image_index}", status_code=status.HTTP_204_NO_CONTENT)
@@ -645,3 +891,228 @@ async def set_main_vehicle_image(
         images=vehicle.images,
         main_image=vehicle.main_image,
     )
+
+
+@router.get("/{vehicle_id}/similar", response_model=List[SimilarVehicleResponse])
+async def get_similar_vehicles(
+    vehicle_id: UUID,
+    limit: int = Query(10, ge=1, le=50, description="Maximum number of results"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Get vehicles similar to a given vehicle.
+
+    Uses semantic search with pgvector embeddings.
+
+    Args:
+        vehicle_id: Reference vehicle ID
+        limit: Maximum number of results
+        current_user: Current authenticated user
+        db: Database session
+
+    Returns:
+        List of similar vehicles with similarity scores
+
+    Raises:
+        HTTPException: If vehicle not found, no permission, or AI disabled
+    """
+    # Check if vector search is enabled
+    from app.core.config import settings
+
+    if not settings.ENABLE_VECTOR_SEARCH or not settings.ENABLE_AI_SERVICE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Vector search is not enabled"
+        )
+
+    # Verify vehicle exists and user has permission
+    result = await db.execute(
+        select(Vehicle).where(Vehicle.id == vehicle_id).where(Vehicle.deleted_at.is_(None))
+    )
+    vehicle = result.scalar_one_or_none()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found"
+        )
+
+    # Check permission
+    if (current_user.role != UserRole.ADMIN and
+        vehicle.dealership_id != current_user.dealership_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+
+    # Get similar vehicles
+    try:
+        orchestrator = get_orchestrator()
+        similar_vehicles = await orchestrator.find_similar_vehicles(
+            db=db,
+            vehicle_id=str(vehicle_id),
+            limit=limit,
+        )
+
+        return similar_vehicles
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to find similar vehicles: {str(e)}"
+        )
+
+
+@router.get("/search/semantic", response_model=List[SemanticSearchResponse])
+async def semantic_search_vehicles(
+    query: str = Query(..., min_length=3, description="Search query"),
+    limit: int = Query(10, ge=1, le=50, description="Maximum number of results"),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Semantic search for vehicles using natural language.
+
+    Uses pgvector embeddings for intelligent search.
+
+    Args:
+        query: Search query text
+        limit: Maximum number of results
+        current_user: Current authenticated user
+        db: Database session
+
+    Returns:
+        List of matching vehicles with similarity scores
+
+    Raises:
+        HTTPException: If AI disabled
+    """
+    # Check if vector search is enabled
+    from app.core.config import settings
+
+    if not settings.ENABLE_VECTOR_SEARCH or not settings.ENABLE_AI_SERVICE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Semantic search is not enabled"
+        )
+
+    # Build filters based on user role
+    filters = {}
+    if current_user.role != UserRole.ADMIN:
+        # Non-admin users only see vehicles from their dealership
+        # Note: This is applied in the query itself
+        pass
+
+    try:
+        orchestrator = get_orchestrator()
+        results = await orchestrator.search_vehicles_semantically(
+            db=db,
+            query_text=query,
+            limit=limit,
+            filters=filters,
+        )
+
+        # Filter results based on user permissions
+        if current_user.role != UserRole.ADMIN:
+            # Filter to only show vehicles from user's dealership
+            results = [
+                r for r in results
+                if r.get("dealership_id") == str(current_user.dealership_id)
+            ]
+
+        return results
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Semantic search failed: {str(e)}"
+        )
+
+
+@router.post("/ai/generate-ad", response_model=Dict)
+async def generate_vehicle_ad(
+    vehicle_id: UUID,
+    content_type: str = Query("full", description="Content type: 'headline' or 'full'"),
+    current_user: User = Depends(get_current_manager_or_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Generate advertisement content for a vehicle.
+
+    Uses AI to create compelling ad copy.
+
+    Args:
+        vehicle_id: Vehicle ID
+        content_type: Type of content to generate
+        current_user: Current authenticated user
+        db: Database session
+
+    Returns:
+        Generated ad content
+
+    Raises:
+        HTTPException: If vehicle not found, no permission, or AI disabled
+    """
+    # Check if AI service is enabled
+    from app.core.config import settings
+
+    if not settings.ENABLE_AI_SERVICE:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="AI service is not enabled"
+        )
+
+    # Get vehicle
+    result = await db.execute(
+        select(Vehicle).where(Vehicle.id == vehicle_id).where(Vehicle.deleted_at.is_(None))
+    )
+    vehicle = result.scalar_one_or_none()
+
+    if not vehicle:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found"
+        )
+
+    # Check permission
+    if (current_user.role != UserRole.ADMIN and
+        vehicle.dealership_id != current_user.dealership_id):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+
+    # Prepare vehicle data
+    vehicle_data = {
+        "id": str(vehicle.id),
+        "brand": vehicle.brand,
+        "model": vehicle.model,
+        "year": vehicle.year,
+        "price": float(vehicle.price),
+        "mileage": vehicle.mileage or 0,
+        "body_type": vehicle.body_type,
+        "transmission": vehicle.transmission,
+        "fuel_type": vehicle.fuel_type,
+        "features": vehicle.features or {},
+        "description": vehicle.description,
+        "title": vehicle.title,
+        "version": vehicle.version,
+        "color": vehicle.color,
+    }
+
+    try:
+        orchestrator = get_orchestrator()
+        ad_content = await orchestrator.generate_ad_content(
+            vehicle_data=vehicle_data,
+            content_type=content_type,
+        )
+
+        return ad_content
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate ad content: {str(e)}"
+        )
+

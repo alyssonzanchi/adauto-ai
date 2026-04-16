@@ -1,0 +1,76 @@
+Analyze the following vehicle and provide comprehensive market insights.
+
+**Vehicle Details:**
+- Brand: {{ vehicle.brand }}
+- Model: {{ vehicle.model }}
+- Year: {{ vehicle.year }}
+- Price: R$ {{ "{:,.2f}".format(vehicle.price) }}
+- Mileage: {{ "{:,}".format(vehicle.mileage) }} km
+- Body Type: {{ vehicle.body_type|upper }}
+{% if vehicle.get('transmission') %}
+- Transmission: {{ vehicle.transmission|upper }}
+{% endif %}
+{% if vehicle.get('fuel_type') %}
+- Fuel Type: {{ vehicle.fuel_type|upper }}
+{% endif %}
+
+**Features:**
+{% if vehicle.features %}
+{% if vehicle.features.get('security') %}
+Security: {{ vehicle.features.security|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('comfort') %}
+Comfort: {{ vehicle.features.comfort|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('technology') %}
+Technology: {{ vehicle.features.technology|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('extras') %}
+Extras: {{ vehicle.features.extras|join(', ') }}
+{% endif %}
+{% else %}
+No specific features listed
+{% endif %}
+
+{% if examples %}
+**Reference Examples:**
+{% for example in examples %}
+Example {{ loop.index }}:
+Input: {{ example.input }}
+Output: {{ example.output }}
+
+{% endfor %}
+{% endif %}
+
+**Analysis Required:**
+Provide your analysis in JSON format with these exact keys:
+
+```json
+{
+  "price_market": float,
+  "price_score": int (0-100),
+  "price_position": string ("great_deal" | "good_price" | "fair_price" | "above_market" | "expensive" | "overpriced"),
+  "selling_points": [string],
+  "target_audience": [string],
+  "suggested_improvements": [string],
+  "estimated_ctr": float (0-1),
+  "estimated_conversion": float (0-1),
+  "reasoning": {
+    "market_analysis": string,
+    "selling_points_rationale": string,
+    "audience_rationale": string
+  }
+}
+```
+
+**Guidelines:**
+- price_market: Estimated fair market price based on current Brazilian market conditions
+- price_score: 0-100 score based on price competitiveness (100 = excellent deal)
+- selling_points: List 4-6 key selling points in Portuguese (use underscores: unico_dono, baixa_quilometragem)
+- target_audience: List 3-5 audience segments in Portuguese
+- suggested_improvements: List 3-5 actionable suggestions in Portuguese
+- estimated_ctr: Expected click-through rate (0.02-0.08 range typical)
+- estimated_conversion: Expected conversion rate (0.01-0.05 range typical)
+- Include detailed reasoning for your analysis
+
+Current year for reference: {{ current_year }}

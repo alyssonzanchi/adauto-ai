@@ -1,0 +1,103 @@
+Analyze the pricing strategy for the following vehicle and provide detailed pricing recommendations.
+
+**Vehicle Details:**
+- Brand: {{ vehicle.brand }}
+- Model: {{ vehicle.model }}
+- Year: {{ vehicle.year }}
+- Listed Price: R$ {{ "{:,.2f}".format(vehicle.listed_price) }}
+- Mileage: {{ "{:,}".format(vehicle.mileage) }} km
+- Body Type: {{ vehicle.body_type|upper }}
+
+**Features:**
+{% if vehicle.features %}
+{% if vehicle.features.get('security') %}
+Security: {{ vehicle.features.security|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('comfort') %}
+Comfort: {{ vehicle.features.comfort|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('technology') %}
+Technology: {{ vehicle.features.technology|join(', ') }}
+{% endif %}
+{% else %}
+No specific features listed
+{% endif %}
+
+**Task: Comprehensive Price Analysis**
+
+Provide your analysis in JSON format:
+
+```json
+{
+  "fair_market_price": float,
+  "price_range": {
+    "excellent_condition": float,
+    "good_condition": float,
+    "fair_condition": float
+  },
+  "competitiveness_score": int (0-100),
+  "positioning": string ("great_deal" | "good_price" | "fair_price" | "above_market" | "expensive" | "overpriced"),
+  "listed_vs_market": {
+    "difference": float,
+    "difference_percent": float,
+    "assessment": string
+  },
+  "market_insights": {
+    "demand_level": string ("high" | "moderate" | "low"),
+    "supply_level": string ("high" | "moderate" | "low"),
+    "trend": string ("appreciating" | "stable" | "depreciating"),
+    "reasoning": string
+  },
+  "recommendations": [string],
+  "estimated_days_to_sell": {
+    "at_current_price": int,
+    "at_recommended_price": int
+  }
+}
+```
+
+**Analysis Guidelines:**
+
+1. **Fair Market Price**: Based on current Brazilian market conditions
+   - Consider brand reputation and reliability
+   - Account for depreciation (avg 15% per year)
+   - Adjust mileage impact (1% per 10k km above average)
+   - Factor in feature completeness
+
+2. **Price Range**: Provide range by condition
+   - Excellent: Impeccable, full options, single owner
+   - Good: Normal wear, well-maintained
+   - Fair: Some wear, needs minor attention
+
+3. **Competitiveness Score (0-100)**:
+   - 90-100: Exceptional value, will sell quickly
+   - 75-89: Good value, competitive
+   - 60-74: Fair price, average market position
+   - 40-59: Above market, may take longer to sell
+   - 0-39: Overpriced, needs adjustment
+
+4. **Positioning**: Select one value based on price vs market
+
+5. **Market Insights**: Analyze current market dynamics
+   - Demand: High demand = faster sales, premium pricing
+   - Supply: Low supply = competitive advantage
+   - Trend: Consider seasonal and economic factors
+
+6. **Recommendations**: Provide 3-5 actionable pricing suggestions
+   - Specific price adjustments if needed
+   - Negotiation strategy
+   - Marketing focus areas
+
+7. **Days to Sell**: Estimate based on current market conditions
+   - At current price: Honest assessment
+   - At recommended price: If adjustments made
+
+**Market Factors to Consider:**
+- Seasonal trends (year-end, holidays, etc.)
+- Regional price variations
+- Brand-specific depreciation
+- Economic conditions
+- Supply chain impacts
+- Consumer preferences shifts
+
+Provide objective, data-driven analysis without emotional bias.

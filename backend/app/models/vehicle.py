@@ -10,6 +10,7 @@ from sqlalchemy import (
     JSON,
     Column,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     Numeric,
@@ -105,6 +106,21 @@ class Vehicle(Base):
         "estimated_conversion": 0.028,
         "model_version": "v1.2.0"
     }
+    """
+
+    # Vector Embeddings (pgvector)
+    description_embedding = Column(ARRAY(Float, dimensions=1536), nullable=True)
+    """
+    Embedding vector for vehicle description and title.
+    Used for semantic search and similarity matching.
+    Generated using OpenAI text-embedding-3-small (1536 dimensions).
+    """
+
+    features_embedding = Column(ARRAY(Float, dimensions=1536), nullable=True)
+    """
+    Embedding vector for vehicle features and characteristics.
+    Used for complementary vehicle recommendations.
+    Generated using OpenAI text-embedding-3-small (1536 dimensions).
     """
 
     # Metadata

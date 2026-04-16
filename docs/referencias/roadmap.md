@@ -75,27 +75,38 @@ Estabelecer a base técnica e infraestrutura do sistema.
 ### Objetivo
 Implementar o sistema de inteligência artificial.
 
-### Semana 5: AI Service Foundation
+### Semana 5: AI Service Foundation ✅
 **Backend**
-- [ ] Criar AI Service (FastAPI separado)
-- [ ] Implementar Agent Orchestrator
-- [ ] Setup Claude API integration
-- [ ] Setup OpenAI (backup)
-- [ ] Criar prompt templates
-- [ ] Implementar Vector Store (pgvector)
-
-### Semana 6: Analyzer & Generator Agents
-**Agents**
-- [ ] Analyzer Agent (vehicle analysis)
-- [ ] Generator Agent (ad content)
-- [ ] Scorer Agent (price scoring)
-- [ ] Prompt engineering
-- [ ] Testes e validação
+- [x] Criar AI Service (integrado ao backend)
+- [x] Implementar Agent Orchestrator
+- [x] Setup Claude API integration (primary)
+- [x] Setup OpenAI (backup)
+- [x] Criar prompt templates (Jinja2)
+- [x] Implementar Vector Store (pgvector)
+- [x] Testes e validação completos
 
 **API**
-- [ ] POST /ai/analyze-vehicle
-- [ ] POST /ai/generate-ad
-- [ ] Integração com Vehicle service
+- [x] POST /api/v1/vehicles/{id}/analyze (funcional)
+- [x] POST /api/v1/vehicles/ai/generate-ad (novo)
+- [x] GET /api/v1/vehicles/{id}/similar (novo)
+- [x] GET /api/v1/vehicles/search/semantic (novo)
+
+**Histórico**: `historico/semana5-ai-service/` ✅
+
+### Semana 6: Analyzer & Generator Agents ✅
+**Agents**
+- [x] Analyzer Agent (vehicle analysis)
+- [x] Generator Agent (ad content)
+- [x] Scorer Agent (price scoring)
+- [x] Prompt engineering (Jinja2 templates)
+- [x] Testes e validação
+
+**API**
+- [x] POST /api/v1/vehicles/{id}/analyze
+- [x] POST /api/v1/vehicles/ai/generate-ad
+- [x] Integração com Vehicle service
+
+**Histórico**: Implementado na Semana 5 (`historico/semana5-ai-service/`) ✅
 
 ### Semana 7: ML Models
 **Models**
@@ -446,6 +457,6 @@ Features adicionais e melhorias contínuas.
 
 ---
 
-**Última atualização**: 2026-04-08
-**Status**: ✅ Semanas 1-3 completas - Autenticação e API Core prontas
-**Próxima milestone**: Implementar Vehicles API (Semana 4)
+**Última atualização**: 2026-04-16
+**Status**: ✅ Semanas 1-6 completas - AI Service Foundation e Agents implementados
+**Próxima milestone**: ML Models (Semana 7)

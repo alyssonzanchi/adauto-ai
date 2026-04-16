@@ -1,0 +1,80 @@
+Generate compelling {{ content_type|upper }} content for the following vehicle advertisement.
+
+**Vehicle Details:**
+- Brand: {{ vehicle.brand }}
+- Model: {{ vehicle.model }}
+- Year: {{ vehicle.year }}
+- Mileage: {{ "{:,}".format(vehicle.mileage) }} km
+- Price: R$ {{ "{:,.2f}".format(vehicle.price) }}
+- Body Type: {{ vehicle.body_type|upper }}
+
+**Key Highlights:**
+{% for highlight in vehicle.highlights %}
+- {{ highlight.replace('_', ' ').title() }}
+{% endfor %}
+
+{% if vehicle.features %}
+**Features:**
+{% if vehicle.features.get('security') %}
+Security: {{ vehicle.features.security|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('comfort') %}
+Comfort: {{ vehicle.features.comfort|join(', ') }}
+{% endif %}
+{% if vehicle.features.get('technology') %}
+Technology: {{ vehicle.features.technology|join(', ') }}
+{% endif %}
+{% endif %}
+
+{% if content_type == 'headline' %}
+**Task: Generate Headline**
+
+Create a compelling headline in JSON format:
+```json
+{
+  "headline": "catchy headline",
+  "subheadline": "supporting subheadline"
+}
+```
+
+**Headline Guidelines:**
+- Maximum 70 characters for headline
+- Include key selling points (year, model, main feature)
+- Use emotional words (pronto, impecável, oportunidades)
+- Include brand and model for SEO
+- Create urgency or excitement
+- Use proper capitalization
+
+{% else %}
+**Task: Generate Full Ad Description**
+
+Create a complete advertisement in JSON format:
+```json
+{
+  "headline": "catchy headline",
+  "subheadline": "supporting subheadline",
+  "description": "full ad description with emojis",
+  "cta": "call-to-action phrase",
+  "keywords": ["keyword1", "keyword2", ...]
+}
+```
+
+**Description Guidelines:**
+- Length: 300-500 characters
+- Use emojis strategically (🚗, ✨, 🛡️, 💰, 📍)
+- Structure: Hook → Details → Features → CTA
+- Include specific numbers and details
+- Use bullet points for features
+- Add location placeholder (📍 Localização)
+- Include phone CTA (📞)
+- End with 3-4 relevant hashtags
+
+**CTA Examples:**
+- "Agende seu test-drive hoje mesmo"
+- "Entre em contato agora"
+- "Não perca esta oportunidade"
+- "Únicas unidades disponíveis"
+
+**SEO Keywords:**
+Include 4-6 relevant keywords for search optimization
+{% endif %}
