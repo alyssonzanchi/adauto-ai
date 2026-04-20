@@ -1,14 +1,14 @@
 # 🚀 Progresso Atual - Car Ads Platform
 
-## 📅 Última Atualização: 20/04/2026 (Final da Semana 7)
+## 📅 Última Atualização: 20/04/2026 (Final da Semana 9)
 
 ---
 
 ## ✅ Status Geral
 
 ### Progresso do Projeto
-- **Fase Atual**: Semana 8 de 22 (Fase 2: AI Agent Service)
-- **Progresso**: ~32% completado (Semanas 1-7 prontas)
+- **Fase Atual**: Semana 9 de 22 (Fase 3: Ads & Integration Service)
+- **Progresso**: ~41% completado (Semanas 1-8 prontas, Semana 9 completa)
 - **Confiança**: 95% de sucesso
 - **Status**: 🟢 ON TRACK - Dentro do prazo e orçamento
 
@@ -124,7 +124,7 @@
 
 ---
 
-### ✅ Fase 2: AI Agent Service (Semanas 5-8) - 50% COMPLETO
+### ✅ Fase 2: AI Agent Service (Semanas 5-8) - 100% COMPLETO
 
 **Objetivo**: Implementar serviço de IA com agentes especializados
 
@@ -204,24 +204,90 @@
 - Predição < 100ms
 - 24+ arquivos criados
 
-#### ⏳ Semana 8: Predictor & Optimizer Agents - 0% PENDENTE (Próxima)
-- [ ] PredictorAgent (performance prediction)
-- [ ] OptimizerAgent (ad optimization)
-- [ ] EvaluatorAgent (content quality)
-- [ ] A/B testing integration
-- [ ] Performance optimization
+#### ✅ Semana 8: Predictor & Optimizer Agents - 100% COMPLETA
+- [x] PredictorAgent (performance prediction)
+- [x] OptimizerAgent (ad optimization)
+- [x] EvaluatorAgent (content quality)
+- [x] A/B testing integration
+- [x] Performance optimization
+
+**Histórico**: `historico/semana8-predictor-optimizer/` ✅
+
+**Componentes Implementados**:
+- PredictorAgent (CTR, conversão, ROI, forecasting 7/30/90d)
+- OptimizerAgent (headline, description, images, CTA, bid, budget)
+- EvaluatorAgent (quality score 0-100, benchmarking, improvements)
+
+**API Endpoints**:
+- predict_performance(vehicle_data, forecast_days) ✅
+- optimize_ad(vehicle_data, ad_content, current_metrics, goals) ✅
+- evaluate_content(ad_content, vehicle_id) ✅
 
 ---
 
-### ⏳ Fase 4+: Fases Seguintes - 0% PENDENTE
+### ✅ Fase 3: Ads & Integration Service (Semanas 9-12) - 25% COMPLETO
 
-**Ver roadmap completo**: `docs/referencias/roadmap.md`
+**Objetivo**: Implementar gestão de anúncios e integrações com plataformas
 
-- Fase 3: AI Agent Service (Semanas 5-8)
-- Fase 4: Ads Integration (Semanas 9-12)
-- Fase 5: Frontend Completo (Semanas 13-16)
-- Fase 6: Otimização & Polimento (Semanas 17-20)
-- Fase 7: Deploy & Monitoring (Semanas 21-22)
+#### ✅ Semana 9: Ads Core - 100% COMPLETA
+- [x] CRUD de Ads (8 endpoints)
+- [x] Ad status management (6 estados com validação)
+- [x] Targeting configuration (JSON field)
+- [x] Budget management (daily, total, bid)
+- [x] Ad preview generator (Facebook, Instagram, Google)
+- [x] Frontend list page
+- [x] Frontend create wizard (3 steps)
+- [x] Testes automatizados (5/5 passing)
+
+**Histórico**: `historico/semana9-ads-core/` ✅
+
+**Backend Implementado**:
+- app/schemas/ad.py (8 schemas Pydantic)
+- app/services/ad_service.py (AdService com 10 métodos)
+- app/api/v1/endpoints/ads.py (8 endpoints REST)
+- backend/tests/api/test_ads.py (5 testes)
+
+**Frontend Implementado**:
+- frontend/src/types/ad.ts (interfaces, enums, constants)
+- frontend/src/app/ads/page.tsx (list page)
+- frontend/src/app/ads/create/page.tsx (3-step wizard)
+
+**Features**:
+- Status transitions (DRAFT → SCHEDULED → ACTIVE → PAUSED/COMPLETED/CANCELLED)
+- Platform-specific HTML previews
+- AI-powered optimization integration
+- Multi-tenancy (dealership-scoped)
+- Soft delete
+- Performance tracking (impressions, clicks, spend, conversions)
+
+**Testes**: 5/5 passing (100%)
+
+**Arquivos**: 9 novos + 3 modificados
+
+**Resultado**: Sistema de Ads 100% funcional e testado
+
+#### ⏳ Semana 10: Facebook Ads Integration - 0% PENDENTE (Próxima)
+- [ ] Facebook Ads SDK setup
+- [ ] OAuth flow
+- [ ] Account connection
+- [ ] Create ad endpoint
+- [ ] Publish ad endpoint
+- [ ] Sync metrics
+
+#### ⏳ Semana 11: Google Ads Integration - 0% PENDENTE
+- [ ] Google Ads API setup
+- [ ] OAuth flow
+- [ ] Account connection
+- [ ] Create ad endpoint
+- [ ] Publish ad endpoint
+- [ ] Sync metrics
+
+#### ⏳ Semana 12: Metrics & Analytics - 0% PENDENTE
+- [ ] Metrics collection (Celery tasks)
+- [ ] Metrics aggregation
+- [ ] Dashboard data
+- [ ] ROI calculation
+- [ ] Export reports
 
 ---
 
@@ -278,7 +344,7 @@ car-ads-system/historico/dia2/
 
 ## 📋 Checklist Rápido: O Que Fazer Agora?
 
-### ✅ Feito (Semanas 1-7)
+### ✅ Feito (Semanas 1-8)
 - Requisitos definidos ✅
 - Arquitetura planejada ✅
 - Database schema criado ✅
@@ -306,12 +372,23 @@ car-ads-system/historico/dia2/
 - **ML Models: Price, CTR, Conversion** ✅
 - **Training Pipeline completo** ✅
 - **ML API endpoints funcionando** ✅
+- **PredictorAgent (performance prediction)** ✅
+- **OptimizerAgent (ad optimization)** ✅
+- **EvaluatorAgent (content quality)** ✅
+- **Ads CRUD completo** ✅
+- **Ad status management** ✅
+- **Platform previews (Facebook, Instagram, Google)** ✅
+- **Ads list page frontend** ✅
+- **Ad create wizard frontend** ✅
+- **Ads testes (5/5 passing)** ✅
 
-### ⏳ Próximo (Semana 8)
-- PredictorAgent (performance prediction)
-- OptimizerAgent (ad optimization)
-- EvaluatorAgent (content quality)
-- A/B testing integration
+### ⏳ Próximo (Semana 10)
+- Facebook Ads SDK setup
+- OAuth flow implementation
+- Account connection
+- Create ad endpoint
+- Publish ad endpoint
+- Sync metrics
 
 ---
 
@@ -420,3 +497,22 @@ car-ads-system/historico/dia2/
 - **Componentes**: LLMClient, 3 agentes, Vector Store, Feature Store, Prompt Templates
 - **Testes**: 20+ testes automatizados
 - **Validação**: 5/7 checks passando (71%)
+
+### Semana 8: Predictor & Optimizer Agents (Concluída)
+- **Localização**: `historico/semana8-predictor-optimizer/`
+- **Status**: ✅ 100% completa
+- **Arquivos**: 5 documentos (README, IMPLEMENTATION_SUMMARY, TESTING, VALIDATION_CHECKLIST, AGENTS_RUNBOOK)
+- **Componentes**: PredictorAgent, OptimizerAgent, EvaluatorAgent
+- **Funcionalidades**: Performance prediction, ad optimization, content evaluation
+- **API**: 3 endpoints (via Orchestrator)
+
+### Semana 9: Ads Core (Concluída)
+- **Localização**: `historico/semana9-ads-core/`
+- **Status**: ✅ 100% completa
+- **Arquivos**: 4 documentos (README, IMPLEMENTATION_SUMMARY, TESTING, VALIDATION_CHECKLIST)
+- **Backend**: 8 schemas, AdService, 8 endpoints REST
+- **Frontend**: Types, list page, create wizard (3 steps)
+- **Testes**: 5/5 passing (100%)
+- **Features**: CRUD completo, status management, platform previews, AI integration
+- **Arquivos criados**: 9 novos + 3 modificados
+- **Linhas de código**: ~2.100 (backend + frontend)

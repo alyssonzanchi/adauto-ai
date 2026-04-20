@@ -1,7 +1,7 @@
 """
 Vehicles CRUD endpoints.
 """
-from typing import List
+from typing import Dict, List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile, File

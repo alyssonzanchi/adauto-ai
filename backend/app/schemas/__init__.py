@@ -1,6 +1,15 @@
 """
 Pydantic schemas for request/response validation.
 """
+from app.schemas.ad import (
+    AdCreate,
+    AdFilter,
+    AdPreviewRequest,
+    AdPreviewResponse,
+    AdResponse,
+    AdStatusUpdate,
+    AdUpdate,
+)
 from app.schemas.auth import (
     Token,
     TokenPayload,
@@ -32,4 +41,12 @@ __all__ = [
     "DealershipCreate",
     "DealershipResponse",
     "DealershipUpdate",
+    # Ad
+    "AdCreate",
+    "AdUpdate",
+    "AdResponse",
+    "AdStatusUpdate",
+    "AdFilter",
+    "AdPreviewRequest",
+    "AdPreviewResponse",
 ]

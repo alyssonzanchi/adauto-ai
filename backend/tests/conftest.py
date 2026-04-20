@@ -25,7 +25,7 @@ def event_loop() -> Generator:
 
 
 @pytest.fixture
-async def app() -> FastAPI:
+def app() -> FastAPI:
     """Create test FastAPI application."""
     from app.main import app
     return app

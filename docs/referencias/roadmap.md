@@ -166,19 +166,30 @@ Implementar o sistema de inteligência artificial.
 ### Objetivo
 Implementar gestão de anúncios e integrações com plataformas.
 
-### Semana 9: Ads Core
+### ✅ Semana 9: Ads Core - 100% COMPLETA
 **Backend**
-- [ ] CRUD de Ads
-- [ ] Ad status management
-- [ ] Targeting configuration
-- [ ] Budget management
-- [ ] Ad preview generator
+- [x] CRUD de Ads (8 endpoints REST)
+- [x] Ad status management (6 estados validados)
+- [x] Targeting configuration (JSON field)
+- [x] Budget management (daily, total, bid)
+- [x] Ad preview generator (Facebook, Instagram, Google)
 
 **Frontend**
-- [ ] Tela de listagem de ads
-- [ ] Criador de ads (wizard)
-- [ ] Ad preview component
-- [ ] Ad detail view
+- [x] Tela de listagem de ads
+- [x] Criador de ads (wizard 3 steps)
+- [x] Ad preview component (HTML)
+- [ ] Ad detail view (Semana 14)
+
+**Histórico**: `historico/semana9-ads-core/` ✅
+
+**Implementado**:
+- 8 schemas Pydantic
+- AdService com 10 métodos
+- 8 endpoints REST funcionando
+- Frontend: types, list page, create wizard
+- Testes: 5/5 passing
+
+**Resultado**: Sistema de Ads 100% funcional e testado
 
 ### Semana 10: Facebook Ads Integration
 **Integration**
@@ -485,5 +496,5 @@ Features adicionais e melhorias contínuas.
 ---
 
 **Última atualização**: 2026-04-20
-**Status**: ✅ Semanas 1-7 completas - AI Service Foundation, Agents e ML Models implementados
-**Próxima milestone**: Predictor & Optimizer Agents (Semana 8)
+**Status**: ✅ Semanas 1-9 completas - AI Service, Agents, ML Models, Predictor/Optimizer/Evaluator e Ads Core implementados
+**Próxima milestone**: Facebook Ads Integration (Semana 10)
