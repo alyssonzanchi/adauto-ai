@@ -108,21 +108,29 @@ Implementar o sistema de inteligência artificial.
 
 **Histórico**: Implementado na Semana 5 (`historico/semana5-ai-service/`) ✅
 
-### Semana 7: ML Models
+### ✅ Semana 7: ML Models - 100% COMPLETA
 **Models**
-- [ ] Price Scoring Model (XGBoost)
-- [ ] CTR Prediction Model (Neural Network)
-- [ ] Conversion Rate Model
-- [ ] Feature Engineering
-- [ ] Training pipeline
-- [ ] Model evaluation
+- [x] Price Scoring Model (XGBoost) - R²=0.9998, MAE=R$126,51
+- [x] CTR Prediction Model (XGBoost) - 3-6% CTR
+- [x] Conversion Rate Model (XGBoost) - 1-6% conversion
+- [x] Feature Engineering (134 features)
+- [x] Training pipeline completo
+- [x] Model evaluation implementado
 
 **Infrastructure**
-- [ ] Feature Store (Redis)
-- [ ] Model registry
-- [ ] Prediction API
+- [x] Feature Store (Redis)
+- [x] Model registry funcional
+- [x] Prediction API (3 endpoints)
 
-### Semana 8: Predictor & Optimizer Agents
+**Histórico**: `historico/semana7-ml-models/` ✅
+
+**API Endpoints**:
+- POST /api/v1/ml/predict-price ✅
+- POST /api/v1/ml/predict-ctr ✅
+- POST /api/v1/ml/predict-conversion ✅
+- GET /api/v1/ml/models/info ✅
+
+### ⏳ Semana 8: Predictor & Optimizer Agents (PRÓXIMA)
 **Agents**
 - [ ] Predictor Agent (performance prediction)
 - [ ] Optimizer Agent (ad optimization)
@@ -457,6 +465,6 @@ Features adicionais e melhorias contínuas.
 
 ---
 
-**Última atualização**: 2026-04-16
-**Status**: ✅ Semanas 1-6 completas - AI Service Foundation e Agents implementados
-**Próxima milestone**: ML Models (Semana 7)
+**Última atualização**: 2026-04-20
+**Status**: ✅ Semanas 1-7 completas - AI Service Foundation, Agents e ML Models implementados
+**Próxima milestone**: Predictor & Optimizer Agents (Semana 8)

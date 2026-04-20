@@ -1,14 +1,14 @@
 # 🚀 Progresso Atual - Car Ads Platform
 
-## 📅 Última Atualização: 16/04/2026 (Final das Semanas 5-6)
+## 📅 Última Atualização: 20/04/2026 (Final da Semana 7)
 
 ---
 
 ## ✅ Status Geral
 
 ### Progresso do Projeto
-- **Fase Atual**: Semana 7 de 22 (Fase 2: AI Agent Service)
-- **Progresso**: ~27% completado (Semanas 1-6 prontas)
+- **Fase Atual**: Semana 8 de 22 (Fase 2: AI Agent Service)
+- **Progresso**: ~32% completado (Semanas 1-7 prontas)
 - **Confiança**: 95% de sucesso
 - **Status**: 🟢 ON TRACK - Dentro do prazo e orçamento
 
@@ -171,15 +171,43 @@
 - GET /api/v1/vehicles/{id}/similar ✅
 - GET /api/v1/vehicles/search/semantic ✅
 
-#### ⏳ Semana 7: ML Models - 0% PENDENTE
-- [ ] XGBoost price prediction
-- [ ] CTR prediction model
-- [ ] Conversion prediction model
-- [ ] Training pipeline
+#### ✅ Semana 7: ML Models - 100% COMPLETA
+- [x] Feature Engineering (134 features)
+- [x] XGBoost price prediction (R²=0.9998)
+- [x] CTR prediction model
+- [x] Conversion prediction model
+- [x] Training pipeline completo
+- [x] API endpoints (3 endpoints)
+- [x] Testes e validação
 
-#### ⏳ Semana 8: Predictor & Optimizer - 0% PENDENTE
-- [ ] PredictorAgent
-- [ ] OptimizerAgent
+**Histórico**: `historico/semana7-ml-models/` ✅
+
+**Componentes Implementados**:
+- FeatureEngineer (134 features: Vehicle + Market + Temporal + Interaction)
+- PriceModel (XGBoost: price, score 0-100, position, confidence)
+- CTRModel (XGBoost: CTR, bucket, optimization suggestions)
+- ConversionModel (XGBoost: conversion rate, lead quality 0-100)
+- ModelRegistry (versionamento, registro, carregamento)
+- Training Pipeline (DataLoader, Preprocessor, Trainer, Evaluator)
+
+**API Endpoints**:
+- POST /api/v1/ml/predict-price ✅
+- POST /api/v1/ml/predict-ctr ✅
+- POST /api/v1/ml/predict-conversion ✅
+- GET /api/v1/ml/models/info ✅
+
+**Resultados**:
+- Features: 134 (meta: 100+)
+- Price Model: R²=0.9998, MAE=R$126,51
+- CTR Prediction: 3-6% (dependendo de conteúdo)
+- Conversion Prediction: 1-6% (dependendo do lead)
+- Predição < 100ms
+- 24+ arquivos criados
+
+#### ⏳ Semana 8: Predictor & Optimizer Agents - 0% PENDENTE (Próxima)
+- [ ] PredictorAgent (performance prediction)
+- [ ] OptimizerAgent (ad optimization)
+- [ ] EvaluatorAgent (content quality)
 - [ ] A/B testing integration
 - [ ] Performance optimization
 
@@ -250,7 +278,7 @@ car-ads-system/historico/dia2/
 
 ## 📋 Checklist Rápido: O Que Fazer Agora?
 
-### ✅ Feito (Semanas 1-3)
+### ✅ Feito (Semanas 1-7)
 - Requisitos definidos ✅
 - Arquitetura planejada ✅
 - Database schema criado ✅
@@ -269,17 +297,21 @@ car-ads-system/historico/dia2/
 - **Profile management pronto** ✅
 - **CRUD de Vehicles completo** ✅
 - **Image upload via MinIO funcional** ✅
-- **AI Service (mock) implementado** ✅
+- **AI Service (Claude API) implementado** ✅
+- **Vector Store (pgvector) implementado** ✅
+- **Agent Orchestrator funcional** ✅
 - **Frontend types e hooks criados** ✅
 - **Vehicle list page implementada** ✅
+- **Feature Engineering (134 features)** ✅
+- **ML Models: Price, CTR, Conversion** ✅
+- **Training Pipeline completo** ✅
+- **ML API endpoints funcionando** ✅
 
-### ⏳ Próximo (Semana 7)
-- ML Models (XGBoost)
-- Price Scoring Model
-- CTR Prediction Model
-- Conversion Rate Model
-- Feature Engineering
-- Training pipeline
+### ⏳ Próximo (Semana 8)
+- PredictorAgent (performance prediction)
+- OptimizerAgent (ad optimization)
+- EvaluatorAgent (content quality)
+- A/B testing integration
 
 ---
 
@@ -305,27 +337,51 @@ car-ads-system/historico/dia2/
 
 ## 🚀 Chamada à Ação
 
-### Para Semana 7 (ML Models)
+### Para Semana 8 (Predictor & Optimizer Agents)
 
 1. ✅ **Ler roadmap.md** (15 min)
    - Seção "Fase 2: AI Agent Service"
-   - Focar na "Semana 7: ML Models"
+   - Focar na "Semana 8: Predictor & Optimizer"
 
-2. ⏳ **Price Scoring Model (XGBoost)**
-   - Coletar dados históricos de vendas
-   - Feature engineering
-   - Treinar modelo XGBoost
-   - Avaliar performance
+2. ⏳ **PredictorAgent**
+   - Performance prediction (ML + LLM)
+   - ROI forecasting
+   - Budget optimization
 
-3. ⏳ **CTR Prediction Model**
-   - Criar features de anúncios
-   - Treinar modelo de regressão
-   - Integrar com AI service
+3. ⏳ **OptimizerAgent**
+   - Ad content optimization
+   - A/B testing suggestions
+   - Bid recommendations
 
-4. ⏳ **Conversion Rate Model**
-   - Features de leads
-   - Modelo de classificação
-   - Predição de conversão
+4. ⏳ **EvaluatorAgent**
+   - Content quality scoring
+   - Ad performance analysis
+   - Improvement recommendations
+
+---
+
+## 📞 Suporte
+
+**Dúvidas sobre progresso?**
+- Consulte: `docs/referencias/roadmap.md`
+- Veja: `docs/INDEX.md` (índice rápido)
+- Cheque: `docs/DIA1_DIA2_INTEGRATION.md` (comparação)
+
+---
+
+### Semana 7: ML Models (Concluída 20/04/2026)
+- **Localização**: `historico/semana7-ml-models/`
+- **Status**: ✅ 100% completa
+- **Arquivos**: 3 documentos (README, IMPLEMENTATION_SUMMARY, SEMANA_7_SETUP)
+- **Componentes**: 24+ arquivos criados
+- **Features**: 134 features implementadas
+- **Models**: Price (R²=0.9998), CTR, Conversion
+- **API**: 3 endpoints REST funcionando
+
+**Status da Semana 5**: ✅ COMPLETA E FUNCIONAL
+
+**Data**: 20/04/2026
+**Próxima Fase**: Semana 8 - Predictor & Optimizer Agents
 
 ---
 

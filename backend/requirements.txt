@@ -42,6 +42,13 @@ pgvector==0.2.4
 tiktoken==0.5.2
 jinja2==3.1.2
 
+# ML Extras
+joblib==1.3.2               # Model persistence
+featuretools==1.30.0        # Automated feature engineering
+category-encoders==2.6.3    # Categorical encoding
+evidently==0.4.5            # Model monitoring
+mlflow==2.9.0               # Experiment tracking
+
 # S3 / MinIO
 boto3==1.29.0
 botocore==1.32.0
