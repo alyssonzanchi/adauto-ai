@@ -385,6 +385,145 @@ class AgentOrchestrator:
 
         return health
 
+    async def predict_performance(
+        self,
+        vehicle_data: Dict[str, Any],
+        forecast_days: int = 30,
+        include_scenarios: bool = False,
+        target_budget: Optional[float] = None,
+    ) -> Dict[str, Any]:
+        """
+        Predict complete ad performance using ML + AI.
+
+        Args:
+            vehicle_data: Vehicle data dictionary
+            forecast_days: Forecast period (7, 30, or 90)
+            include_scenarios: Include budget scenario analysis
+            target_budget: Target budget for scenarios
+
+        Returns:
+            Complete prediction with ML predictions + AI insights
+        """
+        try:
+            from app.services.ai.agents.predictor import PredictorAgent
+
+            # Lazy load predictor agent
+            if not hasattr(self, 'predictor_agent'):
+                self.predictor_agent = PredictorAgent(self.llm_client)
+
+            self.metrics["analyses_performed"] += 1
+
+            # Prepare context
+            context = {
+                "vehicle_data": vehicle_data,
+                "forecast_days": forecast_days,
+                "target_budget": target_budget,
+                "include_scenarios": include_scenarios
+            }
+
+            # Execute predictor
+            prediction = await self.predictor_agent._execute_with_metrics(context)
+
+            logger.info(f"Performance prediction completed for vehicle {vehicle_data.get('id')}")
+
+            return prediction
+
+        except Exception as e:
+            self.metrics["errors"] += 1
+            logger.error(f"Performance prediction failed: {e}")
+            raise
+
+    async def optimize_ad(
+        self,
+        vehicle_data: Dict[str, Any],
+        ad_content: Dict[str, Any],
+        current_metrics: Optional[Dict[str, Any]] = None,
+        goals: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Optimize ad content and strategy.
+
+        Args:
+            vehicle_data: Vehicle information
+            ad_content: Current ad content
+            current_metrics: Current performance metrics
+            goals: Target goals (CTR, conversion, budget)
+
+        Returns:
+            Optimization recommendations
+        """
+        try:
+            from app.services.ai.agents.optimizer import OptimizerAgent
+
+            # Lazy load optimizer agent
+            if not hasattr(self, 'optimizer_agent'):
+                self.optimizer_agent = OptimizerAgent(self.llm_client)
+
+            self.metrics["ads_generated"] += 1
+
+            # Prepare context
+            context = {
+                "vehicle_data": vehicle_data,
+                "ad_content": ad_content,
+                "current_metrics": current_metrics or {},
+                "goals": goals or {}
+            }
+
+            # Execute optimizer
+            optimization = await self.optimizer_agent._execute_with_metrics(context)
+
+            logger.info(f"Ad optimization completed for vehicle {vehicle_data.get('id')}")
+
+            return optimization
+
+        except Exception as e:
+            self.metrics["errors"] += 1
+            logger.error(f"Ad optimization failed: {e}")
+            raise
+
+    async def evaluate_content(
+        self,
+        ad_content: Dict[str, Any],
+        vehicle_id: Optional[str] = None,
+        include_benchmark: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Evaluate ad content quality.
+
+        Args:
+            ad_content: Ad content to evaluate
+            vehicle_id: Associated vehicle ID
+            include_benchmark: Include benchmarking comparison
+
+        Returns:
+            Quality evaluation with scoring and recommendations
+        """
+        try:
+            from app.services.ai.agents.evaluator import EvaluatorAgent
+
+            # Lazy load evaluator agent
+            if not hasattr(self, 'evaluator_agent'):
+                self.evaluator_agent = EvaluatorAgent(self.llm_client)
+
+            # Prepare context
+            context = {
+                "ad_content": ad_content,
+                "vehicle_id": vehicle_id,
+                "include_benchmark": include_benchmark
+            }
+
+            # Execute evaluator
+            evaluation = await self.evaluator_agent._execute_with_metrics(context)
+
+            logger.info(f"Content evaluation completed")
+
+            return evaluation
+
+        except Exception as e:
+            self.metrics["errors"] += 1
+            logger.error(f"Content evaluation failed: {e}")
+            raise
+
     def get_metrics(self) -> Dict[str, Any]:
         """
         Get orchestrator metrics.
@@ -392,8 +531,10 @@ class AgentOrchestrator:
         Returns:
             Metrics dictionary with sub-metrics from all services
         """
+        base_metrics = super().get_metrics() if hasattr(super(), 'get_metrics') else {}
+
         return {
-            **self.metrics,
+            **base_metrics,
             "llm_client": self.llm_client.get_metrics(),
             "embedding_service": self.embedding_service.get_metrics(),
             "vector_service": self.vector_service.get_metrics(),
@@ -401,6 +542,9 @@ class AgentOrchestrator:
             "analyzer_agent": self.analyzer_agent.get_metrics(),
             "generator_agent": self.generator_agent.get_metrics(),
             "scorer_agent": self.scorer_agent.get_metrics(),
+            "predictor_agent": self.predictor_agent.get_metrics() if hasattr(self, 'predictor_agent') else {},
+            "optimizer_agent": self.optimizer_agent.get_metrics() if hasattr(self, 'optimizer_agent') else {},
+            "evaluator_agent": self.evaluator_agent.get_metrics() if hasattr(self, 'evaluator_agent') else {},
         }
 
     def reset_metrics(self):
