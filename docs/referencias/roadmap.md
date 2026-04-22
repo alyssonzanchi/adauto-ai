@@ -226,18 +226,41 @@ Implementar gestão de anúncios e integrações com plataformas.
 
 **Resultado**: Integração completa com Facebook Ads 100% funcional
 
-### Semana 11: Google Ads Integration
+### ✅ Semana 11: Google Ads Integration - 100% COMPLETA
 **Integration**
-- [ ] Google Ads API setup
-- [ ] OAuth flow
-- [ ] Account connection
-- [ ] Create ad endpoint
-- [ ] Publish ad endpoint
-- [ ] Sync metrics
+- [x] Google Ads API setup (google-ads library)
+- [x] OAuth flow (access_token + refresh_token)
+- [x] Account connection (6 endpoints)
+- [x] Create ad endpoint (Campaign → AdGroup → Expanded Text Ad)
+- [x] Publish ad endpoint
+- [x] Sync metrics (GAQL queries)
+- [x] Automatic token refresh
 
 **API**
-- [ ] POST /integrations/google/connect
-- [ ] POST /ads/{id}/publish (Google)
+- [x] POST /integrations/google/connect (OAuth init)
+- [x] GET /integrations/google/callback (OAuth callback)
+- [x] GET /integrations/google/accounts (list accounts)
+- [x] POST /integrations/google/accounts/{customer_id}/connect (connect account)
+- [x] DELETE /integrations/google/accounts/{id} (disconnect)
+- [x] GET /integrations/google/accounts/{id}/status (connection status)
+- [x] POST /integrations/google/sync/{customer_id}/metrics (sync metrics)
+- [x] GET /integrations/google/ads/{id}/metrics (realtime metrics)
+- [x] POST /ads/{id}/publish (Google)
+
+**Backend**
+- [x] GoogleAccount model (connection management)
+- [x] GoogleToken model (OAuth tokens com needs_refresh)
+- [x] 9 Pydantic schemas for validation
+- [x] GoogleIntegrationService (OAuth + accounts + token refresh)
+- [x] GoogleAdsPublisher (ad publishing)
+- [x] GoogleMetricsSync (metrics sync com GAQL)
+
+**Testes**
+- [x] 6 automated tests for integration
+
+**Histórico**: `historico/semana11-google-ads/` ✅
+
+**Resultado**: Integração completa com Google Ads 100% funcional
 
 ### Semana 12: Metrics & Analytics
 **Backend**
@@ -512,12 +535,13 @@ Features adicionais e melhorias contínuas.
 4. ✅ Backend core (auth, vehicles)
 5. ✅ AI service (analyzer, generator)
 6. ✅ Integração com Facebook Ads
-7. ⏳ Integração com Google Ads (Semana 11)
-8. ⏳ Frontend MVP
-9. ⏳ Testes e deploy
+7. ✅ Integração com Google Ads
+8. ⏳ Metrics & Analytics (Semana 12)
+9. ⏳ Frontend MVP
+10. ⏳ Testes e deploy
 
 ---
 
 **Última atualização**: 2026-04-22
-**Status**: ✅ Semanas 1-10 completas - AI Service, Agents, ML Models, Predictor/Optimizer/Evaluator, Ads Core e Facebook Ads Integration implementados
-**Próxima milestone**: Google Ads Integration (Semana 11)
+**Status**: ✅ Semanas 1-11 completas - AI Service, Agents, ML Models, Predictor/Optimizer/Evaluator, Ads Core, Facebook Ads Integration e Google Ads Integration implementados
+**Próxima milestone**: Metrics & Analytics (Semana 12)
