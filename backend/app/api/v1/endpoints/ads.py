@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import select, func, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,6 +22,7 @@ from app.schemas.ad import (
     AdPreviewRequest,
     AdPreviewResponse,
 )
+from app.schemas.facebook import FacebookPublishResponse
 from app.schemas.pagination import PaginatedResponse, PaginationParams
 from app.services.ad_service import AdService
 
@@ -378,3 +379,61 @@ async def generate_ad_preview(
     preview = await ad_service.generate_ad_preview(preview_data.dict(), db)
 
     return preview
+
+
+@router.post("/{ad_id}/publish", response_model=FacebookPublishResponse)
+async def publish_ad_to_facebook(
+    ad_id: UUID,
+    facebook_account_id: str = Query(..., description="Facebook Ad Account ID"),
+    campaign_name: str = Query(..., description="Campaign name"),
+    adset_name: str = Query(..., description="Ad set name"),
+    objective: str = Query("OUTCOME_TRAFFIC", description="Campaign objective"),
+    ad_status: str = Query("PAUSED", description="Initial ad status"),
+    current_user: User = Depends(get_current_manager_or_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Publish ad to Facebook Ads platform.
+
+    Only managers and admins can publish ads.
+    """
+    from app.models.ad import Ad
+    from app.schemas.facebook import FacebookPublishResponse
+    from app.services.facebook_ads_service import FacebookAdsPublisher
+
+    # Get ad with permission check
+    query = select(Ad).where(Ad.id == ad_id).where(Ad.deleted_at.is_(None))
+
+    if current_user.role != UserRole.ADMIN:
+        from app.models.vehicle import Vehicle
+        query = query.join(Vehicle).where(
+            Vehicle.dealership_id == current_user.dealership_id
+        )
+
+    result = await db.execute(query)
+    ad = result.scalar_one_or_none()
+
+    if not ad:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Ad not found"
+        )
+
+    # Publish to Facebook
+    publisher = FacebookAdsPublisher(db)
+    response = await publisher.publish_ad(
+        ad_id=ad_id,
+        facebook_account_id=facebook_account_id,
+        campaign_name=campaign_name,
+        adset_name=adset_name,
+        objective=objective,
+        status=ad_status
+    )
+
+    if not response.success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=response.message,
+        )
+
+    return response
