@@ -74,6 +74,7 @@ class Dealership(Base):
     vehicles = relationship("Vehicle", back_populates="dealership", cascade="all, delete-orphan")
     ad_platform_accounts = relationship("AdPlatformAccount", back_populates="dealership", cascade="all, delete-orphan")
     facebook_accounts = relationship("FacebookAccount", back_populates="dealership", cascade="all, delete-orphan")
+    google_accounts = relationship("GoogleAccount", back_populates="dealership", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return f"<Dealership {self.name} ({self.id})>"

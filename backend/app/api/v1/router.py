@@ -3,7 +3,7 @@ API router.
 """
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import ads, auth, users, dealerships, profile, vehicles, ml, facebook
+from app.api.v1.endpoints import ads, auth, users, dealerships, profile, vehicles, ml, facebook, google
 # from app.api.v1.endpoints import ai_agents  # Temporarily disabled due to missing schemas
 
 api_router = APIRouter()
@@ -54,6 +54,12 @@ api_router.include_router(
     facebook.router,
     prefix="/integrations/facebook",
     tags=["Facebook Integration"]
+)
+
+api_router.include_router(
+    google.router,
+    prefix="/integrations/google",
+    tags=["Google Integration"]
 )
 
 # Temporarily disabled due to missing schemas

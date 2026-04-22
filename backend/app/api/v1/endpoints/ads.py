@@ -23,6 +23,7 @@ from app.schemas.ad import (
     AdPreviewResponse,
 )
 from app.schemas.facebook import FacebookPublishResponse
+from app.schemas.google import GooglePublishResponse
 from app.schemas.pagination import PaginatedResponse, PaginationParams
 from app.services.ad_service import AdService
 
@@ -399,6 +400,7 @@ async def publish_ad_to_facebook(
     """
     from app.models.ad import Ad
     from app.schemas.facebook import FacebookPublishResponse
+from app.schemas.google import GooglePublishResponse
     from app.services.facebook_ads_service import FacebookAdsPublisher
 
     # Get ad with permission check
@@ -427,6 +429,64 @@ async def publish_ad_to_facebook(
         campaign_name=campaign_name,
         adset_name=adset_name,
         objective=objective,
+        status=ad_status
+    )
+
+    if not response.success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=response.message,
+        )
+
+    return response
+
+
+@router.post("/{ad_id}/publish/google", response_model=GooglePublishResponse)
+async def publish_ad_to_google(
+    ad_id: UUID,
+    google_customer_id: str = Query(..., description="Google Ads Customer ID"),
+    campaign_name: str = Query(..., description="Campaign name"),
+    ad_group_name: str = Query(..., description="Ad group name"),
+    budget_amount: float = Query(..., description="Daily budget amount"),
+    ad_status: str = Query("PAUSED", description="Initial ad status"),
+    current_user: User = Depends(get_current_manager_or_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Publish ad to Google Ads platform.
+
+    Only managers and admins can publish ads.
+    """
+    from app.models.ad import Ad
+    from app.schemas.google import GooglePublishResponse
+    from app.services.google_ads_service import GoogleAdsPublisher
+
+    # Get ad with permission check
+    query = select(Ad).where(Ad.id == ad_id).where(Ad.deleted_at.is_(None))
+
+    if current_user.role != UserRole.ADMIN:
+        from app.models.vehicle import Vehicle
+        query = query.join(Vehicle).where(
+            Vehicle.dealership_id == current_user.dealership_id
+        )
+
+    result = await db.execute(query)
+    ad = result.scalar_one_or_none()
+
+    if not ad:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Ad not found"
+        )
+
+    # Publish to Google Ads
+    publisher = GoogleAdsPublisher(db)
+    response = await publisher.publish_ad(
+        ad_id=ad_id,
+        google_customer_id=google_customer_id,
+        campaign_name=campaign_name,
+        ad_group_name=ad_group_name,
+        budget_amount=budget_amount,
         status=ad_status
     )
 
